@@ -1,14 +1,13 @@
 const router = require('express').Router();
 
-router.use('*', (request, response, next) => {
-    next({ status: 404, message: 'That URL was not found.' });
-});
+const Recipes = require('./recipes-model');
 
-router.use((error, request, response, next) => {
-    response.status(error.status || 500).json({
-        message: error.message || 'An error occurred within the recipes router.',
-        stack: error.stack
-    });
+router.get('/:recipe_id', (request, response, next) => {
+    Recipes.getRecipeById(request.params.recipe_id)
+        .then(recipe => {
+            response.json(recipe);
+        })
+        .catch(next);
 });
 
 module.exports = router;
